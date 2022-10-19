@@ -28,8 +28,8 @@ class StringTest {
         val actual = value.split(",")
 
         //then
-        assertThat(actual[0]).contains("1")
-        assertThat(actual[1]).contains("2")
+        assertThat(actual[0].contains("1")).isTrue
+        assertThat(actual[1].contains("2")).isTrue
         assertThat(actual).containsExactly("1", "2")
     }
 
