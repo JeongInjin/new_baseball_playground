@@ -59,9 +59,9 @@ class StringTest {
     @DisplayName("문자에 index 접근 테스트")
     fun `요구사항 3(1)`() {
         val actual = "abc"
-        assertThat(actual[0]).isEqualTo("a")
-        assertThat(actual[1]).isEqualTo("b")
-        assertThat(actual[2]).isEqualTo("c")
+        assertThat(actual[0]).isEqualTo('a')
+        assertThat(actual[1]).isEqualTo('b')
+        assertThat(actual[2]).isEqualTo('c')
     }
 
     @Test
