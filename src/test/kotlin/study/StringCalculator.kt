@@ -1,7 +1,9 @@
 package study
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.text.DecimalFormat
 
 /**
  * 단위 테스트 실습 - 문자열 계산기
@@ -21,66 +23,77 @@ class StringCalculator {
 
     @Test
     fun StringCalculatorTest() {
+        //given
         val inputValue = "2 + 3 * 4 / 2"
+        val inputValue2 = "51 - 32 * 11 / 3 + 3"
+        val inputValue3 = "0 / 2 + 3 * 0 + 2 - 4 / 2"
+        val inputValue4 = "1 / 1"
+        val inputValue5 = "1 / 1"
+
+        //when
         val calculator = Calculator(inputValue)
+        val calculator2 = Calculator(inputValue2)
+        val calculator3 = Calculator(inputValue3)
+        val calculator4 = Calculator(inputValue4)
+        val calculator5 = Calculator(inputValue5)
+            calculator5.arithmeticOperation = "^"
 
-        for (s in calculator.valueList) {
-            getArithmeticOperation(calculator, s)
-        }
-
-        Assertions.assertThat(calculator.result).isEqualTo(10.0)
-
+        //then
+        assertThat(calculator.result).isEqualTo(10.0)
+        assertThat(calculator2.result).isEqualTo(72.67)
+        assertThat(calculator3.result).isEqualTo(-1.0)
+        //나눗셈일경우 0 이면 안된다.
+        assertThatThrownBy { getArithmeticOperation(calculator4, "0") }.isInstanceOf(IllegalArgumentException::class.java)
+        //사칙연산 을 제외한 나머지 계산식은 에러를 발생한다.
+        assertThatThrownBy { getArithmeticOperation(calculator5, "1") }.isInstanceOf(IllegalArgumentException::class.java)
     }
 }
 
-infix fun String.isInteger(s: String): Int? {
-    return s.toIntOrNull()
-}
-
-class Calculator(val inputValue: String) {
+class Calculator(inputValue: String) {
 
     init {
-        if(inputValue.isNullOrEmpty())
-            throw IllegalArgumentException("값을 입력해 주세요.")
+
+        if(inputValue.isNullOrEmpty()) throw IllegalArgumentException("값을 입력해 주세요.")
         inputValue.split(" ").also { this.valueList = it as MutableList<String> }
         if(valueList.size <= 1) throw IllegalArgumentException("숫자와 식 은 띄워쓰기로 입력해 주세요.")
 
-        val integer = valueList[0].isInteger(valueList[0])
+        val integer = valueList[0].toIntOrNull()
         (integer?.toDouble() ?: kotlin.run { throw IllegalArgumentException("첫번째 인수는 반드시 숫자여야 합니다") }).also { this.result = it }
         this.valueList.removeAt(0)
+        
+        startCal() //계산시작
     }
 
     var result: Double = 0.0
+        get() {
+            return DecimalFormat("#.##").format(field).toDouble()
+        }
+
     lateinit var arithmeticOperation: String
 
     var valueList:MutableList<String>
 
-    fun add(num: Int) {
-        result += num
+    private fun startCal() {
+        for (s in this.valueList) {
+            getArithmeticOperation(this, s)
+        }
     }
 
-    fun subtract(num: Int) {
-        result -= num
-    }
-
-    fun multiply(num: Int) {
-        result *= num
-    }
-
-    fun divide(num: Int) {
-        result /= num
-    }
+    fun compute(operation: () -> Unit) = operation()
 }
 
-fun getArithmeticOperation(calculator: Calculator, num: String) {
-    if (num.isInteger(num) == null) {
-        calculator.arithmeticOperation = num
+fun getArithmeticOperation(cal: Calculator, num: String) {
+    if (num.toIntOrNull() == null) {
+        cal.arithmeticOperation = num
     } else {
-        when (calculator.arithmeticOperation) {
-            "+" -> calculator.add(num.toInt())
-            "-" -> calculator.subtract(num.toInt())
-            "*" -> calculator.multiply(num.toInt())
-            "/" -> calculator.divide(num.toInt())
+        when (cal.arithmeticOperation) {
+            "+" -> cal.compute { cal.result += num.toDouble() }
+            "-" -> cal.compute { cal.result -= num.toDouble() }
+            "*" -> cal.compute { cal.result *= num.toDouble() }
+            "/" -> cal.compute {
+                if(num.toInt() == 0) throw IllegalArgumentException("나누기는 0 으로 할 수 없습니다.")
+                cal.result /= num.toDouble()
+            }
             else -> throw IllegalArgumentException("[+, -, *, /] 만 허용됩니다.")
         }
     }
