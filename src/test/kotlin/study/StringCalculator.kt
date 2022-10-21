@@ -19,6 +19,7 @@ import java.text.DecimalFormat
         문자열을 숫자로 변경하는 방법
             int number = Integer.parseInt("문자열");
  */
+//입력값을 받아 수행하는 코드는 inputStringCalculrator.kt 에 있습니다.(아래는 테스트코드)
 class StringCalculator {
 
     @Test
