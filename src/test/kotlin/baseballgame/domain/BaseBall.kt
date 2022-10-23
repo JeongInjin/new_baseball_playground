@@ -3,17 +3,12 @@ package baseballgame.domain
 import baseballgame.utils.baseBallInputValid
 import baseballgame.utils.baseBallResetValid
 import jdk.jfr.Description
-import java.lang.StringBuilder
+import kotlin.text.StringBuilder
 
 class BaseBall {
 
     init {
         getRandomNumber()
-    }
-
-    @Description("랜덤 값 생성")
-    private fun getRandomNumber() {
-        randomNumber = "123"
     }
 
     var ball = 0
@@ -89,5 +84,18 @@ class BaseBall {
             println("3개의 숫자를 모두 맞히셨습니다! 게임 종료")
             this.correctAnswer = true
         }
+    }
+
+    @Description("랜덤 값 생성")
+    private fun getRandomNumber() {
+        var numberList = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
+        var choiceNumber = StringBuilder()
+
+        while(choiceNumber.length < 3) {
+            val randomIndex = (0 until numberList.size).random()
+            choiceNumber.append(numberList[randomIndex])
+            numberList.removeAt(randomIndex)
+        }
+        this.randomNumber = choiceNumber.toString()
     }
 }
