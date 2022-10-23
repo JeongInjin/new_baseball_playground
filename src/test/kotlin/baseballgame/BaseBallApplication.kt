@@ -8,8 +8,6 @@ fun main(args: Array<String>) = with(System.`in`.bufferedReader()) {
     val baseBall = BaseBall()
     while (baseBall.reStart) {
         baseBall.playerInput = startBaseBall()
-
-        baseBall.isCorrectAnswer()
         if (baseBall.correctAnswer) {
             restartQuestion(baseBall)
         }

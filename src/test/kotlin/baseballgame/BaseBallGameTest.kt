@@ -1,7 +1,6 @@
 package baseballgame
 
 import baseballgame.domain.BaseBall
-import baseballgame.utils.baseBallInputValid
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assumptions.*
@@ -89,5 +88,44 @@ class BaseBallGameTest {
         baseBall.isRestartBaseBall("1")
 
         assertThat(baseBall.randomNumber).isNotEqualTo("test")
+    }
+
+    /**
+     * 목록 3 테스트
+     */
+    @Test
+    @DisplayName("같은 수가 같은 자리에 있으면 스트라이크 이다.")
+    fun sameInputStrikeTest() {
+        baseBall.randomNumber = "123"
+        baseBall.playerInput = "145"
+        assertThat(baseBall.strike).isEqualTo(1)
+        baseBall.playerInput = "125"
+        assertThat(baseBall.strike).isEqualTo(2)
+        baseBall.playerInput = "123"
+        assertThat(baseBall.strike).isEqualTo(3)
+    }
+
+    @Test
+    @DisplayName("같은 수가 같은 자리에 있으면 볼 이다.")
+    fun sameInputBallTest() {
+        baseBall.randomNumber = "123"
+        baseBall.playerInput = "345"
+        assertThat(baseBall.ball).isEqualTo(1)
+        baseBall.playerInput = "315"
+        assertThat(baseBall.ball).isEqualTo(2)
+        baseBall.playerInput = "312"
+        assertThat(baseBall.ball).isEqualTo(3)
+    }
+
+    @Test
+    @DisplayName("같은 수가 전혀 없으면 낫싱 이다.")
+    fun sameInputNothingTest() {
+        baseBall.randomNumber = "123"
+        baseBall.playerInput = "125"
+        assertThat(baseBall.nothing).isEqualTo(1)
+        baseBall.playerInput = "145"
+        assertThat(baseBall.nothing).isEqualTo(2)
+        baseBall.playerInput = "567"
+        assertThat(baseBall.nothing).isEqualTo(3)
     }
 }
