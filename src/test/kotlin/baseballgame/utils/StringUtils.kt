@@ -2,14 +2,17 @@ package baseballgame.utils
 
 import baseballgame.code.MESSAGE
 import baseballgame.code.MESSAGE.*
+import jdk.jfr.Description
 
 fun throwIllegalArgumentException(message: MESSAGE? = null): Nothing =
     throw IllegalArgumentException(message?.desc)
 
+@Description("입력값에 대한 유효성 검사")
 infix fun String.baseBallInputValid(input: String) {
     inputValidated(input)
 }
 
+@Description("재시작 입력값에 대한 유효성 검사")
 infix fun String.baseBallResetValid(input: String) {
     resetValidated(input)
 }
